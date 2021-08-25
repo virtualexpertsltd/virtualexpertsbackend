@@ -65,7 +65,7 @@ app.use("/serviceCardHeader", serviceCardHeader);
 // app.use("/aboutUser", aboutUser);
 app.use("/amazon", amazon);
 app.use("/adminLogin", adminLogin);
-app.use("/team", team);
+app.use("/teams", team);
 app.use("/scheduleMeeting", scheduleMeeting);
 app.use("/topServices", topServices);
 
