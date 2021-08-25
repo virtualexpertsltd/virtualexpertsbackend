@@ -28,6 +28,12 @@ const footerLink = require("./routes/footerLink");
 const order = require("./routes/order");
 const testimonials = require("./routes/testimonials");
 const serviceCardHeader = require("./routes/serviceCardHeader");
+const amazon = require("./routes/amazon");
+const aboutUser = require("./routes/aboutUser");
+const adminLogin = require("./routes/adminLogin");
+const team = require("./routes/team");
+const scheduleMeeting = require("./routes/scheduleMeeting");
+const topServices = require("./routes/topServices");
 
 mongoose
   .connect(process.env.MONGODB_URL, {
@@ -56,6 +62,12 @@ app.use("/footerLink", footerLink);
 app.use("/order", order);
 app.use("/testimonials", testimonials);
 app.use("/serviceCardHeader", serviceCardHeader);
+app.use("/aboutUser", aboutUser);
+app.use("/amazon", amazon);
+app.use("/adminLogin", adminLogin);
+app.use("/team", team);
+app.use("/scheduleMeeting", scheduleMeeting);
+app.use("/topServices", topServices);
 
 app.get("/", (req, res) => {
   res.send("Hello Buddy!!!");
