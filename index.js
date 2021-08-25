@@ -27,6 +27,7 @@ const footer = require("./routes/footer");
 const footerLink = require("./routes/footerLink");
 const order = require("./routes/order");
 const testimonials = require("./routes/testimonials");
+const serviceCardHeader = require("./routes/serviceCardHeader");
 
 mongoose
   .connect(process.env.MONGODB_URL, {
@@ -53,7 +54,8 @@ app.use("/whatWeDo", whatWeDo);
 app.use("/footer", footer);
 app.use("/footerLink", footerLink);
 app.use("/order", order);
-app.use("testimonials", testimonials);
+app.use("/testimonials", testimonials);
+app.use("/serviceCardHeader", serviceCardHeader);
 
 app.get("/", (req, res) => {
   res.send("Hello Buddy!!!");
