@@ -22,6 +22,10 @@ const FooterSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    address: {
+      type: String,
+      required: true,
+    },
   },
   { timeStamps: true }
 );

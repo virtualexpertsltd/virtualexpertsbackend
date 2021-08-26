@@ -32,6 +32,7 @@ router.put("/update", async (req, res) => {
           skype: req.body.skype,
           whatsApp: req.body.whatsApp,
           copyRightText: req.body.copyRightText,
+          address: req.body.address,
         },
       },
       {
