@@ -12,6 +12,15 @@ router.get("/", async (req, res) => {
 
 router.post("/post", async (req, res) => {
   try {
+    const file = req.files.file;
+    const newImg = file.data;
+    const encImg = newImg.toString("base64");
+    let coverImage = {
+      contentType: file.mimetype,
+      size: file.size,
+      img: Buffer.from(encImg, "base64"),
+    };
+    req.body.img = coverImage;
     const virtualService = new VirtualService(req.body);
     const data = await virtualService.save();
     res.status(200).json(data);
@@ -21,21 +30,48 @@ router.post("/post", async (req, res) => {
 });
 
 router.put("/update", async (req, res) => {
+  console.log(req.body);
   try {
     const id = req.body._id;
-    await VirtualService.findByIdAndUpdate(
-      { _id: id },
-      {
-        $set: {
-          title: req.body.title,
-          description: req.body.description,
+    if (req.body.uploadImage === false) {
+      await VirtualService.findByIdAndUpdate(
+        { _id: id },
+        {
+          $set: {
+            img: req.body.img,
+            title: req.body.title,
+            description: req.body.description,
+          },
         },
-      },
-      {
-        useFindAndModify: false,
-      }
-    );
-    res.status(200).json("mawmaw");
+        {
+          useFindAndModify: false,
+        }
+      );
+      res.status(200).json("Updated Successful");
+    } else {
+      const file = req.files.file;
+      const newImg = file.data;
+      const encImg = newImg.toString("base64");
+      let coverImage = {
+        contentType: file.mimetype,
+        size: file.size,
+        img: Buffer.from(encImg, "base64"),
+      };
+      req.body.img = coverImage;
+      await VirtualService.findByIdAndUpdate(
+        { _id: id },
+        {
+          $set: {
+            img: req.body.img,
+            title: req.body.title,
+            description: req.body.description,
+          },
+        },
+        {
+          useFindAndModify: false,
+        }
+      );
+    }
   } catch (err) {
     res.status(404).json(err);
   }

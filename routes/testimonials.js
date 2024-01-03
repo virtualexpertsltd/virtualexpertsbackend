@@ -16,6 +16,7 @@ router.post("/post", async (req, res) => {
     await newTestimonial.save();
     res.status(200).json("Testimonial added successful");
   } catch (err) {
+    console.log(err)
     res.status(404).json(err);
   }
 });
@@ -73,6 +74,19 @@ router.put("/update", async (req, res) => {
         }
       );
     }
+  } catch (err) {
+    res.status(404).json(err);
+  }
+});
+
+
+// delete data from testimonial card collection
+router.delete("/delete/:id", async (req, res) => {
+  try {
+    const testimonialCard = await Testimonial.findByIdAndDelete({
+      _id: req.params.id,
+    });
+    res.status(200).json(testimonialCard);
   } catch (err) {
     res.status(404).json(err);
   }

@@ -38,6 +38,10 @@ const ServicesCardSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    crn: {
+      type: String,
+      default: "",
+    },
     maintenance: {
       type: String,
       default: "",

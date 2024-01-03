@@ -32,6 +32,8 @@ router.post("/post", async (req, res) => {
 router.put("/update", async (req, res) => {
   try {
     const id = req.body._id;
+    console.log(req.body)
+    console.log(req.files)
     if (req.body.uploadImage === false) {
       await TopServices.findByIdAndUpdate(
         { _id: id },
@@ -72,6 +74,7 @@ router.put("/update", async (req, res) => {
       );
     }
   } catch (err) {
+    console.log(err)
     res.status(404).json(err);
   }
 });
