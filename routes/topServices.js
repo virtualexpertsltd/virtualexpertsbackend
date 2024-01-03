@@ -3,7 +3,7 @@ const TopServices = require("../models/TopServices");
 
 router.get("/", async (req, res) => {
   try {
-    const topServices = await TopServices.find({});
+    const topServices = await TopServices.find({}, { img: 0 });
     res.status(200).json(topServices);
   } catch (err) {
     res.status(404).json(err);
