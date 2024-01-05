@@ -23,7 +23,7 @@ router.post("/post", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const testimonials = await Testimonial.find({});
+    const testimonials = await Testimonial.find({}, { img: 0 });
     res.status(200).json(testimonials);
   } catch (err) {
     res.status(404).json(err);
