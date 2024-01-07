@@ -10,7 +10,11 @@ const WhatWeDoSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    subDescription: {
+    subDescription_1: {
+      type: String,
+      required: true,
+    },
+    subDescription_2: {
       type: String,
       required: true,
     },

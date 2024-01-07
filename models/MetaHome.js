@@ -10,6 +10,10 @@ const MetaHomeSchema = new mongoose.Schema(
         type:String,
         require:true
     },
+    keywords:{
+        type:String,
+        require:true
+    },
     
 },
 { timeStamps: true }

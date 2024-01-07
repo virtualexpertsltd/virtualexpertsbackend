@@ -29,6 +29,7 @@ router.put('/update', async (req, res) => {
         $set: {
           title: req.body.title,
           description: req.body.description,
+          keywords: req.body.keywords,
         },
       },
       {

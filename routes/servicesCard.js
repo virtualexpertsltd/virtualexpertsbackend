@@ -4,7 +4,7 @@ const ServicesCard = require("../models/ServicesCard");
 // all data get from service card collection
 router.get("/", async (req, res) => {
   try {
-    const servicesCard = await ServicesCard.find({});
+    const servicesCard = await ServicesCard.find({}, { img: 0 });
     res.status(200).json(servicesCard);
   } catch (err) {
     res.status(404).json(err);
@@ -59,6 +59,7 @@ router.put("/update", async (req, res) => {
             delivery: req.body.delivery,
             warranty: req.body.warranty,
             price: req.body.price,
+            crn: req.body.crn,
             maintenance: req.body.maintenance,
             imgTitle: req.body.imgTitle,
             imgAlt: req.body.imgAlt,
@@ -92,6 +93,7 @@ router.put("/update", async (req, res) => {
             delivery: req.body.delivery,
             warranty: req.body.warranty,
             price: req.body.price,
+            crn: req.body.crn,
             maintenance: req.body.maintenance,
             imgTitle: req.body.imgTitle,
             imgAlt: req.body.imgAlt,

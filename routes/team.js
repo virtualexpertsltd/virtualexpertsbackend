@@ -22,7 +22,7 @@ router.post("/post", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const teams = await Team.find({});
+    const teams = await Team.find({}, { img: 0 });
     res.status(200).json(teams);
   } catch (err) {
     res.status(404).json(err);

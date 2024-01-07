@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const VirtualServiceSchema = new mongoose.Schema(
   {
     img: {
-      type: String,
+      type: Object,
       required: true,
     },
     title: {
@@ -14,7 +14,14 @@ const VirtualServiceSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-   
+    imgURL: {
+      type: String,
+      default: "",
+    },
+    alt: {
+      type: String,
+      default: "",
+    },
   },
   { timeStamps: true }
 );
