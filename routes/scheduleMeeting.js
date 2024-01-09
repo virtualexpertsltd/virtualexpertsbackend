@@ -1,11 +1,16 @@
 const router = require("express").Router();
 const ScheduleMeeting = require("../models/ScheduleMeeting");
+const Cache = require("../Services/Cache.service");
+
+const key = "scheduleMeeting";
+Cache.register(key, () => ScheduleMeeting.find({}));
 
 router.post("/post", async (req, res) => {
   try {
     const newTitle = new ScheduleMeeting(req.body);
     await newTitle.save();
     res.status(200).json("Added Successfully");
+    await Cache.refresh(key);
   } catch (err) {
     res.status(404).json(err);
   }
@@ -13,7 +18,7 @@ router.post("/post", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const scheduleMeeting = await ScheduleMeeting.find({});
+    const scheduleMeeting = await Cache.retrieve(key);
     res.status(200).json(scheduleMeeting[0]);
   } catch (err) {
     res.status(404).json(err);
@@ -36,6 +41,7 @@ router.put("/update", async (req, res) => {
       { useFindAndModify: false }
     );
     res.status(200).json("Updated Successfully");
+    await Cache.refresh(key);
   } catch (err) {
     res.status(404).json(err);
   }

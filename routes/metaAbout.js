@@ -1,9 +1,13 @@
 const router = require('express').Router()
 const MetaAbout = require('../models/MetaAbout')
+const Cache = require("../Services/Cache.service");
+
+const key = "metaAbout";
+Cache.register(key, () => MetaAbout.find({}));
 
 router.get('/', async (req, res) => {
   try {
-    const metaAbout = await MetaAbout.find({})
+    const metaAbout = await Cache.retrieve(key)
     res.status(200).json(metaAbout)
   } catch (err) {
     res.status(404).json(err)
@@ -15,6 +19,7 @@ router.post('/post', async (req, res) => {
     const metaAbout = new MetaAbout(req.body)
     const data = await metaAbout.save()
     res.status(200).json(data)
+    await Cache.refresh(key)
   } catch (err) {
     res.status(404).json(err)
   }
@@ -37,6 +42,7 @@ router.put('/update', async (req, res) => {
       }
     )
     res.status(200).json('updated')
+    await Cache.refresh(key)
   } catch (err) {
     res.status(404).json(err)
   }

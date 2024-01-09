@@ -1,9 +1,13 @@
 const router = require("express").Router();
 const TopServices = require("../models/TopServices");
+const Cache = require("../Services/Cache.service");
+
+const key = "topServices";
+Cache.register(key, () => TopServices.find({}, { img: 0 }));
 
 router.get("/", async (req, res) => {
   try {
-    const topServices = await TopServices.find({}, { img: 0 });
+    const topServices = await Cache.retrieve(key);
     res.status(200).json(topServices);
   } catch (err) {
     res.status(404).json(err);
@@ -24,6 +28,7 @@ router.post("/post", async (req, res) => {
     const topServices = new TopServices(req.body);
     const data = await topServices.save();
     res.status(200).json(data);
+    await Cache.refresh(key);
   } catch (err) {
     res.status(404).json(err);
   }
@@ -32,8 +37,6 @@ router.post("/post", async (req, res) => {
 router.put("/update", async (req, res) => {
   try {
     const id = req.body._id;
-    console.log(req.body)
-    console.log(req.files)
     if (req.body.uploadImage === false) {
       await TopServices.findByIdAndUpdate(
         { _id: id },
@@ -48,7 +51,6 @@ router.put("/update", async (req, res) => {
           useFindAndModify: false,
         }
       );
-      res.status(200).json("Updated Successful");
     } else {
       const file = req.files.file;
       const newImg = file.data;
@@ -73,6 +75,8 @@ router.put("/update", async (req, res) => {
         }
       );
     }
+    res.status(200).json("Updated Successful");
+    await Cache.refresh(key);
   } catch (err) {
     console.log(err)
     res.status(404).json(err);

@@ -1,9 +1,13 @@
 const router = require("express").Router();
 const Amazon = require("../models/Amazon");
+const Cache = require("../Services/Cache.service");
+
+const key = "amazon";
+Cache.register(key, () => Amazon.find({}));
 
 router.get("/", async (req, res) => {
   try {
-    const amazon = await Amazon.find({});
+    const amazon = await Cache.retrieve(key);
     res.status(200).json(amazon[0]);
   } catch (err) {
     res.status(404).json(err);
@@ -15,6 +19,7 @@ router.post("/post", async (req, res) => {
     const amazon = new Amazon(req.body);
     const data = await amazon.save();
     res.status(200).json(data);
+    await Cache.refresh(key);
   } catch (err) {
     res.status(404).json(err);
   }
@@ -38,6 +43,7 @@ router.put("/update", async (req, res) => {
       }
     );
     res.status(200).json("Updated Successfully");
+    await Cache.refresh(key);
   } catch (err) {
     res.status(404).json(err);
   }

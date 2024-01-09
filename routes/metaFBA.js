@@ -1,9 +1,13 @@
 const router = require('express').Router()
 const MetaFBA = require('../models/MetaFBA')
+const Cache = require("../Services/Cache.service");
+
+const key = "metaFBA";
+Cache.register(key, () => MetaFBA.find({}));
 
 router.get('/', async (req, res) => {
   try {
-    const metaFBA = await MetaFBA.find({})
+    const metaFBA = await Cache.retrieve(key)
     res.status(200).json(metaFBA)
   } catch (err) {
     res.status(404).json(err)
@@ -15,6 +19,7 @@ router.post('/post', async (req, res) => {
     const metaFBA = new MetaFBA(req.body)
     const data = await metaFBA.save()
     res.status(200).json(data)
+    await Cache.refresh(key);
   } catch (err) {
     res.status(404).json(err)
   }
@@ -37,6 +42,7 @@ router.put('/update', async (req, res) => {
       }
     )
     res.status(200).json('updated')
+    await Cache.refresh(key);
   } catch (err) {
     res.status(404).json(err)
   }
