@@ -1,9 +1,13 @@
 const router = require("express").Router();
 const FooterLink = require("../models/FooterLink");
+const Cache = require("../Services/Cache.service");
+
+const key = "footerLink";
+Cache.register(key, () => FooterLink.find({}));
 
 router.get("/", async (req, res) => {
   try {
-    const footerLink = await FooterLink.find({});
+    const footerLink = await Cache.retrieve(key);
     res.status(200).json(footerLink);
   } catch (err) {
     res.status(404).json(err);
@@ -15,6 +19,7 @@ router.post("/post", async (req, res) => {
     const footerLink = new FooterLink(req.body);
     const data = await footerLink.save();
     res.status(200).json(data);
+    await Cache.refresh(key);
   } catch (err) {
     res.status(404).json(err);
   }
@@ -40,6 +45,7 @@ router.put("/update", async (req, res) => {
       }
     );
     res.status(200).json("updated");
+    await Cache.refresh(key);
   } catch (err) {
     res.status(404).json(err);
   }

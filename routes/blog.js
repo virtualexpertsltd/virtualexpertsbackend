@@ -1,10 +1,14 @@
 const router = require("express").Router();
 const BlogsCard = require("../models/Blog");
+const Cache = require("../Services/Cache.service");
+
+const key = "blogs";
+Cache.register(key, () => BlogsCard.find({}));
 
 // all data get from blog card collection
 router.get("/", async (req, res) => {
   try {
-    const blogsCard = await BlogsCard.find({});
+    const blogsCard = await Cache.retrieve(key);
     res.status(200).json(blogsCard);
   } catch (err) {
     res.status(404).json(err);
@@ -26,6 +30,7 @@ router.post("/post", async (req, res) => {
     const blogsCard = new BlogsCard(req.body);
     const data = await blogsCard.save();
     res.status(200).json(data);
+    await Cache.refresh(key);
   } catch (err) {
     res.status(404).json(err);
   }
@@ -38,6 +43,7 @@ router.delete("/delete/:id", async (req, res) => {
       _id: req.params.id,
     });
     res.status(200).json(blogsCard);
+    await Cache.refresh(key);
   } catch (err) {
     res.status(404).json(err);
   }
@@ -92,6 +98,7 @@ router.put("/update", async (req, res) => {
       );
       res.status(200).json("Update Successfully Done");
     }
+    await Cache.refresh(key);
   } catch (err) {
     res.status(404).json(err);
   }

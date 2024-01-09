@@ -1,5 +1,9 @@
 const router = require("express").Router();
 const Team = require("../models/Team");
+const Cache = require("../Services/Cache.service");
+
+const key = "team";
+Cache.register(key, () => Team.find({}, { img: 0 }));
 
 router.post("/post", async (req, res) => {
   try {
@@ -15,6 +19,7 @@ router.post("/post", async (req, res) => {
     const newTeamMember = new Team(req.body);
     await newTeamMember.save();
     res.status(200).json("Team member added successful");
+    await Cache.refresh(key);
   } catch (err) {
     res.status(404).json(err);
   }
@@ -22,7 +27,7 @@ router.post("/post", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const teams = await Team.find({}, { img: 0 });
+    const teams = await Cache.retrieve(key);
     res.status(200).json(teams);
   } catch (err) {
     res.status(404).json(err);
@@ -46,7 +51,6 @@ router.put("/update", async (req, res) => {
           useFindAndModify: false,
         }
       );
-      res.status(200).json("Updated Successful");
     } else {
       const file = req.files.file;
       const newImg = file.data;
@@ -71,6 +75,8 @@ router.put("/update", async (req, res) => {
         }
       );
     }
+    res.status(200).json("Updated Successful");
+    await Cache.refresh(key);
   } catch (err) {
     res.status(404).json(err);
   }

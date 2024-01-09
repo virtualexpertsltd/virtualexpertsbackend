@@ -1,5 +1,9 @@
 const router = require("express").Router();
 const Testimonial = require("../models/Testimonial");
+const Cache = require("../Services/Cache.service");
+
+const key = "testimonial";
+Cache.register(key, () => Testimonial.find({}, { img: 0 }));
 
 router.post("/post", async (req, res) => {
   try {
@@ -15,6 +19,7 @@ router.post("/post", async (req, res) => {
     const newTestimonial = new Testimonial(req.body);
     await newTestimonial.save();
     res.status(200).json("Testimonial added successful");
+    await Cache.refresh(key);
   } catch (err) {
     console.log(err)
     res.status(404).json(err);
@@ -23,7 +28,7 @@ router.post("/post", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const testimonials = await Testimonial.find({}, { img: 0 });
+    const testimonials = await Cache.retrieve(key);
     res.status(200).json(testimonials);
   } catch (err) {
     res.status(404).json(err);
@@ -48,7 +53,6 @@ router.put("/update", async (req, res) => {
           useFindAndModify: false,
         }
       );
-      res.status(200).json("Updated Successful");
     } else {
       const file = req.files.file;
       const newImg = file.data;
@@ -74,6 +78,8 @@ router.put("/update", async (req, res) => {
         }
       );
     }
+    res.status(200).json("Updated Successful");
+    await Cache.refresh(key);
   } catch (err) {
     res.status(404).json(err);
   }
@@ -87,6 +93,7 @@ router.delete("/delete/:id", async (req, res) => {
       _id: req.params.id,
     });
     res.status(200).json(testimonialCard);
+    await Cache.refresh(key);
   } catch (err) {
     res.status(404).json(err);
   }

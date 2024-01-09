@@ -1,9 +1,13 @@
 const router = require('express').Router()
 const MetaBlog = require('../models/MetaBlog')
+const Cache = require("../Services/Cache.service");
+
+const key = "metaBlog";
+Cache.register(key, () => MetaBlog.find({}));
 
 router.get('/', async (req, res) => {
   try {
-    const metaBlog = await MetaBlog.find({})
+    const metaBlog = await Cache.retrieve(key)
     res.status(200).json(metaBlog)
   } catch (err) {
     res.status(404).json(err)
@@ -15,6 +19,7 @@ router.post('/post', async (req, res) => {
     const metaBlog = new MetaBlog(req.body)
     const data = await metaBlog.save()
     res.status(200).json(data)
+    await Cache.refresh(key);
   } catch (err) {
     res.status(404).json(err)
   }
@@ -37,6 +42,7 @@ router.put('/update', async (req, res) => {
       }
     )
     res.status(200).json('updated')
+    await Cache.refresh(key);
   } catch (err) {
     res.status(404).json(err)
   }
